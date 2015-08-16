@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import re, os, rrdtool, time
+import re, os, rrdtool, time, tweet
 
 # function: read and parse sensor data file
 def read_sensor(path):
@@ -29,9 +29,12 @@ pathes = (
 # read sensor data
 data = 'N'
 for path in pathes:
-  data += ':'
-  data += read_sensor(path)
-  time.sleep(1)
+    temperatures = dict()
+    temperatures['Sensor1'] = read_sensor(path)
+    data += ':'
+    data += read_sensor(path)
+    time.sleep(1)
+tweet.tweet(temperatures)
 
 # insert data into round-robin-database
 rrdtool.update(
