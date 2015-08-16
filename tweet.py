@@ -1,23 +1,13 @@
-import twitter
-import ConfigParser
-
-config = ConfigParser.ConfigParser()
-config.read('config.ini')
-
-consumer_key = config.get('Consumer', 'consumer_key')
-consumer_secret = config.get('Consumer', 'consumer_secret')
-access_token_key = config.get('Access', 'access_token_key')
-access_token_secret = config.get('Access', 'access_token_secret')
-
-api = twitter.Api(consumer_key=consumer_key,
-                  consumer_secret=consumer_secret,
-                  access_token_key=access_token_key,
-                  access_token_secret=access_token_secret)
+import twitter_api
 
 
-def tweet(source, temperature):
-    new_tweet = dict()
-    new_tweet['source'] = source
-    new_tweet['temperature'] = temperature
-    api.PostUpdate('the temperature at %s is %s' % (new_tweet['source'], new_tweet['temperature']))
+def tweet(temperatures):
+    if len(temperatures) == 0:
+        return
+    api = twitter_api.get_api()
+    the_tweet = ''
+    for sensor in temperatures:
+        the_tweet += "%s: %s, " % (sensor, temperatures[sensor])
+    the_tweet = the_tweet[:-2]
+    api.PostUpdate(the_tweet)
 
